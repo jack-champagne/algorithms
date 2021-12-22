@@ -1,9 +1,3 @@
-# tool macros
-CC := gcc
-CCFLAGS := 
-DBGFLAGS := -g
-DBGFLAGS_ASAN := -g -fsanitize=address
-CCOBJFLAGS := $(CCFLAGS) -c
 
 # path macros
 BIN_PATH := bin
@@ -11,6 +5,14 @@ OBJ_PATH := obj
 SRC_PATH := src
 DBG_PATH := debug
 DBG_PATH_ASAN := debug_asan
+IDIR := include
+
+# tool macros
+CC := gcc
+CCFLAGS := -I$(IDIR) -Wall -Wextra -g -pthread
+DBGFLAGS := -g
+DBGFLAGS_ASAN := -g -fsanitize=address
+CCOBJFLAGS := $(CCFLAGS) -c
 
 # compile macros
 TARGET_NAME := main
@@ -42,7 +44,7 @@ default: makedir all
 $(TARGET): $(OBJ)
 	$(CC) $(CCFLAGS) -o $@ $(OBJ)
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c*
+$(OBJ_PATH)/%.o: $(INC) $(SRC_PATH)/%.c*
 	$(CC) $(CCOBJFLAGS) -o $@ $<
 
 $(DBG_PATH)/%.o: $(SRC_PATH)/%.c*
