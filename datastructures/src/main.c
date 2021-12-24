@@ -24,7 +24,9 @@ int main() {
     printf("%d: %d, %d, %d, %d, %d\n", ll_is_empty(new_llist), *(int*)(new_llist->head->data), *(int*)(new_llist->head->next->data), *(int*)(new_llist->head->next->next->data), *(int*)(new_llist->head->next->next->next->data), *(int*)(new_llist->tail->data));
     ll_remove(new_llist, 0);
     printf("%d: %d, %d, %d, %d\n", ll_is_empty(new_llist), *(int*)(new_llist->head->data), *(int*)(new_llist->head->next->data), *(int*)(new_llist->head->next->next->data), *(int*)(new_llist->head->next->next->next->data));
-    printf("%d\n", *(int*)ll_get(new_llist, 0));
+    printf("%d\n", *(int*)ll_get(new_llist, 3));
+    ll_insert_at(new_llist, 3, dyn_int2);
+    printf("%d: %d, %d, %d, %d\n", ll_is_empty(new_llist), *(int*)(new_llist->head->data), *(int*)(new_llist->head->next->data), *(int*)(new_llist->head->next->next->data), *(int*)(new_llist->head->next->next->next->data));
     printf("%d\n", *(int*)ll_get(new_llist, 3));
     free(dyn_int);
     free(dyn_int2);

@@ -37,7 +37,7 @@ void ll_destroy(LinkedList* list) {
 /// 
 /// Returns void
 void ll_append(LinkedList* list, void* data_to_append) {
-    ll_insert_after(list, list->tail, data_to_append);
+    ll_insert_at(list, list->length, data_to_append);
 }
 
 /// Inserts node after the node given and manages pointers properly. Assume node
@@ -47,7 +47,7 @@ void ll_append(LinkedList* list, void* data_to_append) {
 /// ll_insert_after(my_list, predecessor_node, new_node);
 ///
 /// Returns void
-void ll_insert_after(LinkedList* list, Node* prev, void* data_to_insert) {
+void ll_insert_at(LinkedList* list, int index, void* data_to_insert) {
     if (list == NULL || data_to_insert == NULL) {
         fprintf(stderr, "list or data_to_insert NULL, cannot insert after");
         return;
@@ -65,7 +65,8 @@ void ll_insert_after(LinkedList* list, Node* prev, void* data_to_insert) {
         return;
     }
 
-    Node* successor;
+    Node* prev = get_node(list, index - 1);
+    Node* successor = get_node(list, index);
     if (prev == NULL) {
         successor = list->head;
         list->head = new_node;
@@ -86,9 +87,8 @@ void ll_insert_after(LinkedList* list, Node* prev, void* data_to_insert) {
 /// Usage:
 /// ll_prepend(my_list, data_to_prepend)
 void ll_prepend(LinkedList* list, void* data_to_prepend) {
-    ll_insert_after(list, NULL, data_to_prepend);
+    ll_insert_at(list, 0, data_to_prepend);
 }
-
 
 /// Returns the data at specified index in linked list
 /// Usage:
@@ -103,31 +103,34 @@ void* ll_get(LinkedList* list, int index) {
     return get_node(list, index)->data;
 }
 
-/// 
+/// Removes node at specified index
+/// Usage:
+/// int* data = ll_remove(my_list, 1); // Removes and returns pointer to data of the second element of list if element exists
+/// Runtime: O(n) (when we traverse), O(1) when removing head
 void* ll_remove(LinkedList* list, int index) {
     if (list == NULL || index < 0 || index >= list->length) {
         fprintf(stderr, "list null or index out of bounds");
         return NULL;
     }
 
-    Node* removed_node, * prev;
+    Node* removed_node;
+    Node* prev = get_node(list, index - 1);
     if (index == 0) {
         // Change head
         removed_node = list->head;
         list->head = removed_node->next;
-        prev = NULL;
     } else {
         // Repair list
-        Node* prev = get_node(list, index - 1);
         removed_node = get_node(list, index);
         prev->next = removed_node->next;
     }
-    // Fix tail pointer
+
+    // Fix tail pointer if needed
     if (removed_node == list->tail) {
         list->tail = prev;
     }
     list->length--;
-    
+
     void* ret = removed_node->data;
     free(removed_node);
     return ret;
@@ -138,6 +141,10 @@ void* ll_remove(LinkedList* list, int index) {
 /// Node* node_at_index = ll_get(my_list, 1); // Returns the second node in the list if it exists
 /// Returns Node* to node struct rep. index i.
 Node* get_node(LinkedList* list, int index) {
+    if (index >= list->length || index < 0) {
+        return NULL;
+    }
+
     Node* ret = list->head;
     int i = 0;
     while (ret != NULL && i < index) {
